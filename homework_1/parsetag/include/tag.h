@@ -29,10 +29,6 @@ attribute attribute_construct_from_html(int* err, const char* const html_str);
 
 int tag_validate_html_str(const char* const tag_str);
 
-int tag_read_attributes(tag* tag, const char** const html_str_array, int str_count);
-
-int tag_read_name_and_type(tag* tag, const char* const html_str);
-
 void tag_destroy(tag* tag);
 
 tag* tag_create_from_html(int* err, const char* const tag_str);
