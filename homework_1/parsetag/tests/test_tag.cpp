@@ -4,8 +4,8 @@ extern "C" {
 #include "tag.h"
 }
 
-
-TEST(ATTRIBUTE_CONSTRUCT_FROM_HTML, ATTRIBUTE_HAS_VALUE) {
+TEST(ATTRIBUTE_CONSTRUCT_FROM_HTML, ATTRIBUTE_HAS_VALUE)
+{
     // Arrange
     int err = OK;
     const char* const html = "source=\"somepic.jpg\"";
@@ -23,7 +23,8 @@ TEST(ATTRIBUTE_CONSTRUCT_FROM_HTML, ATTRIBUTE_HAS_VALUE) {
     attribute_destroy_internals(&a);
 }
 
-TEST(ATTRIBUTE_CONSTRUCT_FROM_HTML, ATTRIBUTE_HAS_NO_VALUE) {
+TEST(ATTRIBUTE_CONSTRUCT_FROM_HTML, ATTRIBUTE_HAS_NO_VALUE)
+{
     // Arrange
     int err = OK;
     const char* const html = "hidden";
@@ -40,8 +41,8 @@ TEST(ATTRIBUTE_CONSTRUCT_FROM_HTML, ATTRIBUTE_HAS_NO_VALUE) {
     attribute_destroy_internals(&a);
 }
 
-
-TEST(TAG_VALIDATE_HTML_STR, VALID_HTML) {
+TEST(TAG_VALIDATE_HTML_STR, VALID_HTML)
+{
     // Arrange
     const char* const tag = "<br>";
 
@@ -52,7 +53,8 @@ TEST(TAG_VALIDATE_HTML_STR, VALID_HTML) {
     EXPECT_EQ(err, OK);
 }
 
-TEST(TAG_VALIDATE_HTML_STR, INVALID_HTML) {
+TEST(TAG_VALIDATE_HTML_STR, INVALID_HTML)
+{
     // Arrange
     const char* const tag = "<br?";
 
@@ -63,7 +65,8 @@ TEST(TAG_VALIDATE_HTML_STR, INVALID_HTML) {
     EXPECT_EQ(err, ERR_INVALID_HTML_SYNTAX);
 }
 
-TEST(TAG_CREATE_FROM_HTML, VALID_TAG_OPENING) {
+TEST(TAG_CREATE_FROM_HTML, VALID_TAG_OPENING)
+{
     // Arrange
     int err = OK;
     const char* const html = "<br>";
@@ -80,7 +83,8 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_OPENING) {
     tag_destroy(tag);
 }
 
-TEST(TAG_CREATE_FROM_HTML, VALID_TAG_CLOSING) {
+TEST(TAG_CREATE_FROM_HTML, VALID_TAG_CLOSING)
+{
     // Arrange
     int err = OK;
     const char* const html = "</br>";
@@ -97,7 +101,8 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_CLOSING) {
     tag_destroy(tag);
 }
 
-TEST(TAG_CREATE_FROM_HTML, VALID_TAG_NO_ATTRIBUTES) {
+TEST(TAG_CREATE_FROM_HTML, VALID_TAG_NO_ATTRIBUTES)
+{
     // Arrange
     int err = OK;
     const char* const html = "<br>";
@@ -115,7 +120,8 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_NO_ATTRIBUTES) {
     tag_destroy(tag);
 }
 
-TEST(TAG_CREATE_FROM_HTML, VALID_TAG_MULTIPLE_ATTRIBUTES) {
+TEST(TAG_CREATE_FROM_HTML, VALID_TAG_MULTIPLE_ATTRIBUTES)
+{
     // Arrange
     int err = OK;
     const char* const html = "<img source=\"somepic.jpg\" width=\"800\" height=\"600\">";
@@ -141,4 +147,3 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_MULTIPLE_ATTRIBUTES) {
 
     tag_destroy(tag);
 }
-

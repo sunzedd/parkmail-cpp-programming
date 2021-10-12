@@ -1,7 +1,7 @@
 #include "string_array.h"
 
-
-void destroy_string_array(char** str_array, int str_count) {
+void destroy_string_array(char** str_array, int str_count)
+{
     if (!str_array) {
         return;
     }
@@ -15,11 +15,9 @@ void destroy_string_array(char** str_array, int str_count) {
     free(str_array);
 }
 
-
-char** split_string(int* err, int* str_count,
-                    const char* const input_str,
-                    const char* const delimeters) {
-
+char** split_string(int* err, int* str_count, const char* const input_str,
+    const char* const delimeters)
+{
     if (!str_count || !input_str || !delimeters || strlen(input_str) == 0) {
         *err = ERR_INVALID_ARGS;
         return NULL;
@@ -40,8 +38,7 @@ char** split_string(int* err, int* str_count,
     if (last_delimeter) {
         if (last_delimeter == (input_str + strlen(input_str) - 1)) {
             --token_count;
-        }
-        else if (last_delimeter < (input_str + strlen(input_str) - 1)) {
+        } else if (last_delimeter < (input_str + strlen(input_str) - 1)) {
             ++token_count;
         }
     } else {
@@ -68,9 +65,8 @@ char** split_string(int* err, int* str_count,
     int token_found_count = 0;
 
     for (token_ptr = strtok_r(tmp_str, delimeters, &rest_of_str);
-        token_ptr != NULL;
-        token_ptr = strtok_r(NULL, delimeters, &rest_of_str))
-    {
+         token_ptr != NULL;
+         token_ptr = strtok_r(NULL, delimeters, &rest_of_str)) {
         ++token_found_count;
 
         result[idx] = strdup(token_ptr);
@@ -90,8 +86,7 @@ char** split_string(int* err, int* str_count,
             *str_count = 0;
             destroy_string_array(result, token_count);
             return NULL;
-        }
-        else {
+        } else {
             *str_count = token_count;
         }
     }

@@ -1,11 +1,11 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "tag.h"
 
-
-void print_tag(const tag* const tag) {
+void print_tag(const tag* const tag)
+{
     if (!tag) {
         printf("tag is NULL\n\n");
         return;
@@ -22,17 +22,20 @@ void print_tag(const tag* const tag) {
     printf("\n\n");
 }
 
-
-int main(void) {
+int main(void)
+{
     const char* const t1 = "<script type=\"module\" src=\"new_tab_page.js\">";
     const char* const t2 = "<video width=\"320\" height=\"240\" controls>";
     const char* const t3 = "asd";
 
     int err = OK;
 
-    tag* tag1 = tag_create_from_html(&err, t1);     printf("log error: %d\n", err);
-    tag* tag2 = tag_create_from_html(&err, t2);     printf("log error: %d\n", err);
-    tag* tag3 = tag_create_from_html(&err, t3);     printf("log error: %d\n", err);
+    tag* tag1 = tag_create_from_html(&err, t1);
+    printf("log error: %d\n", err);
+    tag* tag2 = tag_create_from_html(&err, t2);
+    printf("log error: %d\n", err);
+    tag* tag3 = tag_create_from_html(&err, t3);
+    printf("log error: %d\n", err);
 
     print_tag(tag1);
     print_tag(tag2);

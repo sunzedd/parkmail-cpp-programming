@@ -4,7 +4,8 @@ extern "C" {
 #include "string_array.h"
 }
 
-TEST(SPLIT_STRING, EMPTY_INPUT_STRING) {
+TEST(SPLIT_STRING, EMPTY_INPUT_STRING)
+{
     // Arrange
     const char* const input_str = "";
     int err = 0;
@@ -22,7 +23,8 @@ TEST(SPLIT_STRING, EMPTY_INPUT_STRING) {
     destroy_string_array(str_array, str_count);
 }
 
-TEST(SPLIT_STRING, NO_DELIMETERS_IN_INPUT_STRING) {
+TEST(SPLIT_STRING, NO_DELIMETERS_IN_INPUT_STRING)
+{
     // Arrange
     const char* const input_str = "hello world";
     int err = 0;
@@ -41,7 +43,8 @@ TEST(SPLIT_STRING, NO_DELIMETERS_IN_INPUT_STRING) {
     destroy_string_array(str_array, str_count);
 }
 
-TEST(SPLIT_STRING, INPUT_STRING_CONTAIN_ONLY_DELIMETERS) {
+TEST(SPLIT_STRING, INPUT_STRING_CONTAIN_ONLY_DELIMETERS)
+{
     // Arrange
     const char* const input_str = "<<<<>>>>//,,,<<,>";
     int err = 0;
@@ -57,7 +60,8 @@ TEST(SPLIT_STRING, INPUT_STRING_CONTAIN_ONLY_DELIMETERS) {
     EXPECT_EQ(err, OK);
 }
 
-TEST(SPLIT_STRING, MULTIPLE_TOKENS) {
+TEST(SPLIT_STRING, MULTIPLE_TOKENS)
+{
     // Arrange
     const char* const input_str = "<img source=\"somepic.jpg\" width=\"800\" height=\"600\">";
     int err = 0;
@@ -79,7 +83,8 @@ TEST(SPLIT_STRING, MULTIPLE_TOKENS) {
     destroy_string_array(str_array, str_count);
 }
 
-TEST(SPLIT_STRING, SINGLE_TOKEN) {
+TEST(SPLIT_STRING, SINGLE_TOKEN)
+{
     // Arrange
     const char* const input_str = "<br>";
     int err = 0;
