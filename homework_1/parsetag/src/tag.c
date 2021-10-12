@@ -68,12 +68,8 @@ int tag_validate_html_str(const char* const tag_str) {
 
 
 static int tag_read_attributes(tag* tag, const char** const html_str_array, int str_count) {
-    if (!tag || !html_str_array) {
+    if (!tag || !html_str_array || str_count == 0) {
         return ERR_INVALID_ARGS;
-    }
-
-    if (str_count) {
-
     }
 
     attribute* attrib_array = (attribute*)malloc(sizeof(attribute) * str_count);
