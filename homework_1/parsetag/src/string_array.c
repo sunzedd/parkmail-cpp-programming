@@ -37,13 +37,17 @@ char** split_string(int* err, int* str_count,
         ++curr;
     }
 
+    if (token_count == 0) {
+        *err = ERR_INVALID_ARGS;
+        return NULL;
+    }
+
     if (last_delimeter == (input_str + strlen(input_str) - 1)) {
         --token_count;
     }
     else if (last_delimeter < (input_str + strlen(input_str) - 1)) {
         ++token_count;
     }
-
 
     char** result = (char**)malloc(sizeof(char*) * token_count);
     if (!result) {
