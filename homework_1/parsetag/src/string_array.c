@@ -65,21 +65,35 @@ char** split_string(int* err, int* str_count,
     char* rest_of_str = tmp_str;
     int idx = 0;
 
+    int token_found_count = 0;
+
     for (token_ptr = strtok_r(tmp_str, delimeters, &rest_of_str);
         token_ptr != NULL;
         token_ptr = strtok_r(NULL, delimeters, &rest_of_str))
     {
+        ++token_found_count;
+
         result[idx] = strdup(token_ptr);
         if (!result[idx]) {
             destroy_string_array(result, token_count);
             *err = ERR_MEM_ALLOC;
+            return NULL;
         }
 
         ++idx;
     }
 
     if (*err == OK) {
-        *str_count = token_count;
+        if (token_found_count == 0) {
+            // Случай, если входная строка состоит только из разделителей
+            // считаем, что функция отработала верно, но возвращаем NULL
+            *str_count = 0;
+            destroy_string_array(result, token_count);
+            return NULL;
+        }
+        else {
+            *str_count = token_count;
+        }
     }
 
     return result;
