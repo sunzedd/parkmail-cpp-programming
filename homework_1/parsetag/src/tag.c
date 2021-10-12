@@ -67,9 +67,13 @@ int tag_validate_html_str(const char* const tag_str) {
 }
 
 
-int tag_read_attributes(tag* tag, const char** const html_str_array, int str_count) {
+static int tag_read_attributes(tag* tag, const char** const html_str_array, int str_count) {
     if (!tag || !html_str_array) {
         return ERR_INVALID_ARGS;
+    }
+
+    if (str_count) {
+
     }
 
     attribute* attrib_array = (attribute*)malloc(sizeof(attribute) * str_count);
@@ -96,7 +100,7 @@ int tag_read_attributes(tag* tag, const char** const html_str_array, int str_cou
     return err;
 }
 
-int tag_read_name_and_type(tag* tag, const char* const html_str) {
+static int tag_read_name_and_type(tag* tag, const char* const html_str) {
     if (!tag || !html_str) {
         return ERR_INVALID_ARGS;
     }
@@ -178,7 +182,9 @@ tag* tag_create_from_html(int* err, const char* const tag_str) {
 
     *err = tag_read_name_and_type(tag, tokenized_html[0]);
     if (*err == OK) {
-        *err = tag_read_attributes(tag, (const char** const)&tokenized_html[1], tokenized_html_str_count - 1);
+        if ((tokenized_html_str_count - 1) > 0) {
+            *err = tag_read_attributes(tag, (const char** const)&tokenized_html[1], tokenized_html_str_count - 1);
+        }
     } 
     else {
         tag_destroy(tag);
