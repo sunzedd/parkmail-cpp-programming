@@ -77,13 +77,14 @@ char **split_string(int *err, int *str_count, const char *const input_str,
         ++idx;
     }
 
+    free(tmp_str);
+
     if (*err == OK) {
         if (token_found_count == 0) {
             // Случай, если входная строка состоит только из разделителей
             // считаем, что функция отработала верно, но возвращаем NULL
             *str_count = 0;
             destroy_string_array(result, token_count);
-            return NULL;
         } else {
             *str_count = token_count;
         }
