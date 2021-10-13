@@ -10,18 +10,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./homework_1
+
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
       - name: install dependencies
         run: sudo apt install valgrind clang-tidy libgtest-dev lcov
 
       - name: build
         run: |
-          cd homework_1
           mkdir build
           cd build
           cmake ..
           make
+        working-directory: ${{env.directory}}
 
       - name: run tests
-        run: |
-          ./homework_1/build/tests/test
+        run: ./build/tests/test
+        working-directory: ${{env.directory}}
