@@ -1,94 +1,105 @@
 #include "string_array.h"
 
-void destroy_string_array(char **str_array, int str_count) {
+void destroy_string_array(char ***str_array, int str_count) {
     if (!str_array) {
         return;
     }
+    if (!(*str_array)) {
+        return;
+    }
+
+    char **str_array_tmp = *(str_array);
 
     for (int i = 0; i < str_count; ++i) {
-        if (str_array[i]) {
-            free(str_array[i]);
+        if ( str_array_tmp[i] ) {
+            free( str_array_tmp[i] );
         }
     }
 
-    free(str_array);
+    free(*str_array);
+    *str_array = NULL;
 }
 
-char **split_string(int *err, int *str_count, const char *const input_str,
-                    const char *const delimeters) {
-    if (!str_count || !input_str || !delimeters || strlen(input_str) == 0) {
+char **split_string(int *err, int *str_array_size,
+                    const char *const delimeters,
+                    const char *const str) {
+
+    if (!str_array_size || !str || !delimeters) {
         *err = ERR_INVALID_ARGS;
         return NULL;
     }
-
-    int token_count = 0;
-    const char *curr = input_str;
-    const char *last_delimeter = NULL;
-
-    while (*curr) {
-        if (strchr(delimeters, *curr)) {
-            ++token_count;
-            last_delimeter = curr;
-        }
-        ++curr;
+    if (strlen(str) == 0) {
+        *err = OK;
+        return NULL;
     }
 
-    if (last_delimeter) {
-        if (last_delimeter == (input_str + strlen(input_str) - 1)) {
-            --token_count;
-        } else if (last_delimeter < (input_str + strlen(input_str) - 1)) {
-            ++token_count;
-        }
-    } else {
-        ++token_count;
-    }
-
-    char **result = (char **)malloc(sizeof(char *) * token_count);
+    char **result = (char **)calloc(STR_ARRAY_DEFAULT_SIZE, sizeof(char*));
     if (!result) {
         *err = ERR_MEM_ALLOC;
         return NULL;
     }
 
-    char *tmp_str = strdup(input_str);
+    char* tmp_str = strdup(str);
     if (!tmp_str) {
         free(result);
         *err = ERR_MEM_ALLOC;
         return NULL;
     }
 
-    char *token_ptr = tmp_str;
-    char *rest_of_str = tmp_str;
+    char* token = tmp_str;
+    char* rest = NULL;
     int idx = 0;
+    int actual_array_size = STR_ARRAY_DEFAULT_SIZE;
+    int required_array_size = 0;
 
-    int token_found_count = 0;
+    for (token = strtok_r(tmp_str, delimeters, &rest);
+         token != NULL && *err == OK;
+         token = strtok_r(NULL, delimeters, &rest)) {
 
-    for (token_ptr = strtok_r(tmp_str, delimeters, &rest_of_str);
-         token_ptr != NULL;
-         token_ptr = strtok_r(NULL, delimeters, &rest_of_str)) {
-        ++token_found_count;
+        if (idx > actual_array_size - 1) {
+            required_array_size = actual_array_size * REALLOC_COEF;
+            char **tmp_result = realloc(result, required_array_size);
+            if (tmp_result) {
+                result = tmp_result;
+                tmp_result = NULL;
+                actual_array_size = required_array_size;
+            } else {
+                *err = ERR_MEM_ALLOC;
+            }
+        }
 
-        result[idx] = strdup(token_ptr);
+        result[idx] = strdup(token);
         if (!result[idx]) {
-            destroy_string_array(result, token_count);
             *err = ERR_MEM_ALLOC;
-            return NULL;
         }
 
         ++idx;
     }
 
-    free(tmp_str);
+    required_array_size = idx;
 
-    if (*err == OK) {
-        if (token_found_count == 0) {
-            // Случай, если входная строка состоит только из разделителей
-            // считаем, что функция отработала верно, но возвращаем NULL
-            *str_count = 0;
-            destroy_string_array(result, token_count);
-        } else {
-            *str_count = token_count;
+    if (required_array_size == 0) {
+        // в строке нет токенов (только разделители)
+        destroy_string_array(&result, actual_array_size);
+        actual_array_size = 0;
+    }
+
+    if (required_array_size < actual_array_size) {
+        char **tmp_result = realloc(result, required_array_size);
+        if (tmp_result) {
+            result = tmp_result;
+            tmp_result = NULL;
+            actual_array_size = required_array_size;
         }
     }
 
+    if (*err != OK) {
+        destroy_string_array(&result, actual_array_size);
+        actual_array_size = 0;
+    }
+
+    *str_array_size = actual_array_size;
+
+    free(tmp_str);
     return result;
 }

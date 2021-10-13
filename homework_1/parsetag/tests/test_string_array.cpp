@@ -4,6 +4,7 @@ extern "C" {
 #include "string_array.h"
 }
 
+
 TEST(SPLIT_STRING, EMPTY_INPUT_STRING) {
     // Arrange
     const char *const input_str = "";
@@ -12,14 +13,14 @@ TEST(SPLIT_STRING, EMPTY_INPUT_STRING) {
     const char *const delimeters = "<>/,";
 
     // Act
-    char **str_array = split_string(&err, &str_count, input_str, delimeters);
+    char **str_array = split_string(&err, &str_count, delimeters, input_str);
 
     // Assert
     EXPECT_EQ(str_count, 0);
     EXPECT_TRUE(str_array == NULL);
-    EXPECT_EQ(err, ERR_INVALID_ARGS);
+    EXPECT_EQ(err, OK);
 
-    destroy_string_array(str_array, str_count);
+    destroy_string_array(&str_array, str_count);
 }
 
 TEST(SPLIT_STRING, NO_DELIMETERS_IN_INPUT_STRING) {
@@ -30,15 +31,15 @@ TEST(SPLIT_STRING, NO_DELIMETERS_IN_INPUT_STRING) {
     const char *const delimeters = "<>/,";
 
     // Act
-    char **str_array = split_string(&err, &str_count, input_str, delimeters);
+    char **str_array = split_string(&err, &str_count, delimeters, input_str);
 
     // Assert
     EXPECT_EQ(str_count, 1);
-    EXPECT_TRUE(str_array != NULL);
+    ASSERT_TRUE(str_array != NULL);
     EXPECT_EQ(err, OK);
     EXPECT_STREQ(str_array[0], input_str);
 
-    destroy_string_array(str_array, str_count);
+    destroy_string_array(&str_array, str_count);
 }
 
 TEST(SPLIT_STRING, INPUT_STRING_CONTAIN_ONLY_DELIMETERS) {
@@ -49,7 +50,7 @@ TEST(SPLIT_STRING, INPUT_STRING_CONTAIN_ONLY_DELIMETERS) {
     const char *const delimeters = "<>/,";
 
     // Act
-    char **str_array = split_string(&err, &str_count, input_str, delimeters);
+    char **str_array = split_string(&err, &str_count, delimeters, input_str);
 
     // Assert
     EXPECT_EQ(str_count, 0);
@@ -66,7 +67,7 @@ TEST(SPLIT_STRING, MULTIPLE_TOKENS) {
     const char *const delimeters = " <>";
 
     // Act
-    char **str_array = split_string(&err, &str_count, input_str, delimeters);
+    char **str_array = split_string(&err, &str_count, delimeters, input_str);
 
     // Assert
     EXPECT_EQ(str_count, 4);
@@ -77,7 +78,7 @@ TEST(SPLIT_STRING, MULTIPLE_TOKENS) {
     EXPECT_STREQ(str_array[3], "height=\"600\"");
     EXPECT_EQ(err, OK);
 
-    destroy_string_array(str_array, str_count);
+    destroy_string_array(&str_array, str_count);
 }
 
 TEST(SPLIT_STRING, SINGLE_TOKEN) {
@@ -88,7 +89,7 @@ TEST(SPLIT_STRING, SINGLE_TOKEN) {
     const char *const delimeters = " <>";
 
     // Act
-    char **str_array = split_string(&err, &str_count, input_str, delimeters);
+    char **str_array = split_string(&err, &str_count, delimeters, input_str);
 
     // Assert
     EXPECT_EQ(str_count, 1);
@@ -96,5 +97,5 @@ TEST(SPLIT_STRING, SINGLE_TOKEN) {
     EXPECT_STREQ(str_array[0], "br");
     EXPECT_EQ(err, OK);
 
-    destroy_string_array(str_array, str_count);
+    destroy_string_array(&str_array, str_count);
 }

@@ -24,6 +24,6 @@ attribute_t attribute_construct_from_html(int *err, const char *const html_str);
 
 int tag_validate_html_str(const char *const tag_str);
 
-void tag_destroy(tag_t *tag);
+void tag_destroy(tag_t **tag);
 
 tag_t *tag_create_from_html(int *err, const char *const tag_str);

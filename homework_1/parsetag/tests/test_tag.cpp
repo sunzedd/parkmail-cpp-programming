@@ -75,7 +75,7 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_OPENING) {
     EXPECT_STREQ(tag->name, "br");
     EXPECT_EQ(tag->type, TAG_TYPE_OPENING);
 
-    tag_destroy(tag);
+    tag_destroy(&tag);
 }
 
 TEST(TAG_CREATE_FROM_HTML, VALID_TAG_CLOSING) {
@@ -92,7 +92,7 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_CLOSING) {
     EXPECT_STREQ(tag->name, "br");
     EXPECT_EQ(tag->type, TAG_TYPE_CLOSING);
 
-    tag_destroy(tag);
+    tag_destroy(&tag);
 }
 
 TEST(TAG_CREATE_FROM_HTML, VALID_TAG_NO_ATTRIBUTES) {
@@ -110,7 +110,7 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_NO_ATTRIBUTES) {
     EXPECT_EQ(tag->attribute_count, 0);
     EXPECT_TRUE(tag->attributes == NULL);
 
-    tag_destroy(tag);
+    tag_destroy(&tag);
 }
 
 TEST(TAG_CREATE_FROM_HTML, VALID_TAG_MULTIPLE_ATTRIBUTES) {
@@ -138,5 +138,5 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_MULTIPLE_ATTRIBUTES) {
     EXPECT_STREQ(tag->attributes[2].name, "height");
     EXPECT_STREQ(tag->attributes[2].value, "600");
 
-    tag_destroy(tag);
+    tag_destroy(&tag);
 }

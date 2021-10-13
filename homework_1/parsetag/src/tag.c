@@ -14,7 +14,7 @@ void attribute_destroy_internals(attribute_t *attrib) {
 attribute_t attribute_construct_from_html(int *err,
                                           const char *const html_str) {
     int token_count = 0;
-    char **tokenized_html = split_string(err, &token_count, html_str, "=");
+    char **tokenized_html = split_string(err, &token_count, "=", html_str);
 
     attribute_t result = {0};
 
@@ -27,7 +27,7 @@ attribute_t attribute_construct_from_html(int *err,
                     // Избавляемся от кавычек в значении атрибута
                     size_t value_char_count = strlen(tokenized_html[1]) - 2;
 
-                    result.value = (char*)malloc(sizeof(char) * (value_char_count + 1)); // + 1 для терминатора строки
+                    result.value = (char*)calloc(value_char_count + 1, sizeof(char)); // + 1 для терминатора строки
                     if (result.value) {
                         result.value = memcpy(result.value, tokenized_html[1] + 1, value_char_count);
                     } else {
@@ -45,7 +45,7 @@ attribute_t attribute_construct_from_html(int *err,
         *err = ERR_INVALID_HTML_SYNTAX;
     }
 
-    destroy_string_array(tokenized_html, token_count);
+    destroy_string_array(&tokenized_html, token_count);
 
     return result;
 }
@@ -69,7 +69,7 @@ static int tag_read_attributes(tag_t *tag, const char **const html_str_array,
     }
 
     attribute_t *attrib_array =
-        (attribute_t *)malloc(sizeof(attribute_t) * str_count);
+        (attribute_t *)calloc(str_count, sizeof(attribute_t));
     if (!attrib_array) {
         return ERR_MEM_ALLOC;
     }
@@ -103,7 +103,7 @@ static int tag_read_name_and_type(tag_t *tag, const char *const html_str) {
 
     if (html_str[0] == '/') {
         tag_type = TAG_TYPE_CLOSING;
-        tag->name = (char *)malloc(sizeof(char) * (strlen(html_str) - 1));
+        tag->name = (char *)calloc(strlen(html_str) - 1, sizeof(char));
         if (!tag->name) {
             err = ERR_MEM_ALLOC;
             return err;
@@ -121,22 +121,26 @@ static int tag_read_name_and_type(tag_t *tag, const char *const html_str) {
     return err;
 }
 
-void tag_destroy(tag_t *tag) {
+void tag_destroy(tag_t **tag) {
     if (!tag) {
         return;
     }
-
-    if (tag->name) {
-        free(tag->name);
+    if (!(*tag)) {
+        return;
     }
-    if (tag->attributes) {
-        for (int i = 0; i < tag->attribute_count; i++) {
-            attribute_destroy_internals(&tag->attributes[i]);
+
+    if ((*tag)->name) {
+        free((*tag)->name);
+    }
+    if ((*tag)->attributes) {
+        for (int i = 0; i < (*tag)->attribute_count; i++) {
+            attribute_destroy_internals(&((*tag)->attributes[i]));
         }
     }
-    
-    free(tag->attributes);
-    free(tag);
+
+    free((*tag)->attributes);
+    (*tag)->attribute_count = 0;
+    free(*tag);
     tag = NULL;
 }
 
@@ -163,14 +167,14 @@ tag_t *tag_create_from_html(int *err, const char *const tag_str) {
 
     int tokenized_html_str_count = 0;
     char **tokenized_html =
-        split_string(err, &tokenized_html_str_count, tag_str, " <>");
+            split_string(err, &tokenized_html_str_count, " <>", tag_str);
     if (!tokenized_html) {
         return NULL;
     }
 
     tag_t *tag = tag_create(err);
     if (!tag) {
-        destroy_string_array(tokenized_html, tokenized_html_str_count);
+        destroy_string_array(&tokenized_html, tokenized_html_str_count);
         return NULL;
     }
 
@@ -182,10 +186,10 @@ tag_t *tag_create_from_html(int *err, const char *const tag_str) {
                                        tokenized_html_str_count - 1);
         }
     } else {
-        tag_destroy(tag);
+        tag_destroy(&tag);
     }
 
-    destroy_string_array(tokenized_html, tokenized_html_str_count);
+    destroy_string_array(&tokenized_html, tokenized_html_str_count);
 
     return tag;
 }

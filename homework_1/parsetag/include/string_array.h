@@ -4,7 +4,9 @@
 
 #include "error_codes.h"
 
-void destroy_string_array(char **str_array, int str_count);
+#define STR_ARRAY_DEFAULT_SIZE 4
+#define REALLOC_COEF 2
 
-char **split_string(int *err, int *str_count, const char *const input_str,
-                    const char *const delimeters);
+void destroy_string_array(char ***str_array, int str_count);
+
+char **split_string(int *err, int *str_array_size, const char *const delimeters, const char *const str);
