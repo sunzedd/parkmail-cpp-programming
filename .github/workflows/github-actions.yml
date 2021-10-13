@@ -32,4 +32,4 @@ jobs:
         run: ./build/parsetag/tests/test
 
       - name: run tests with memory check
-        run: vallgrind ./build/parsetag/tests/test        
+        run: valgrind ./build/parsetag/tests/test        
