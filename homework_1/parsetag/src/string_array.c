@@ -1,7 +1,6 @@
 #include "string_array.h"
 
-void destroy_string_array(char** str_array, int str_count)
-{
+void destroy_string_array(char **str_array, int str_count) {
     if (!str_array) {
         return;
     }
@@ -15,17 +14,16 @@ void destroy_string_array(char** str_array, int str_count)
     free(str_array);
 }
 
-char** split_string(int* err, int* str_count, const char* const input_str,
-    const char* const delimeters)
-{
+char **split_string(int *err, int *str_count, const char *const input_str,
+                    const char *const delimeters) {
     if (!str_count || !input_str || !delimeters || strlen(input_str) == 0) {
         *err = ERR_INVALID_ARGS;
         return NULL;
     }
 
     int token_count = 0;
-    const char* curr = input_str;
-    const char* last_delimeter = NULL;
+    const char *curr = input_str;
+    const char *last_delimeter = NULL;
 
     while (*curr) {
         if (strchr(delimeters, *curr)) {
@@ -45,21 +43,21 @@ char** split_string(int* err, int* str_count, const char* const input_str,
         ++token_count;
     }
 
-    char** result = (char**)malloc(sizeof(char*) * token_count);
+    char **result = (char **)malloc(sizeof(char *) * token_count);
     if (!result) {
         *err = ERR_MEM_ALLOC;
         return NULL;
     }
 
-    char* tmp_str = strdup(input_str);
+    char *tmp_str = strdup(input_str);
     if (!tmp_str) {
         free(result);
         *err = ERR_MEM_ALLOC;
         return NULL;
     }
 
-    char* token_ptr = tmp_str;
-    char* rest_of_str = tmp_str;
+    char *token_ptr = tmp_str;
+    char *rest_of_str = tmp_str;
     int idx = 0;
 
     int token_found_count = 0;
