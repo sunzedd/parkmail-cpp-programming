@@ -10,8 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./homework_1
+    defaults:
+      run:
+        working-directory: ./homework_1
 
     steps:
       - name: checkout
@@ -26,8 +27,7 @@ jobs:
           cd build
           cmake ..
           make
-        working-directory: ${{env.directory}}
 
       - name: run tests
         run: ./build/tests/test
-        working-directory: ${{env.directory}}
+        
