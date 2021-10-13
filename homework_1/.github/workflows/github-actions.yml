@@ -2,7 +2,7 @@ name: Homework_1
 on:
   push:
     branches:
-      - homework_1
+      - homework-1
   pull_request:
     branches:
       - master
