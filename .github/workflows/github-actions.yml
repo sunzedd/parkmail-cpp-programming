@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: install dependencies
-        run: sudo apt install valgrind clang-tidy libtest-dev lcov
+        run: sudo apt install valgrind clang-tidy libgtest-dev lcov
 
       - name: build
         run: |
