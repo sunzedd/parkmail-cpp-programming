@@ -10,7 +10,7 @@ TEST(ATTRIBUTE_CONSTRUCT_FROM_HTML, ATTRIBUTE_HAS_VALUE) {
     const char *const html = "source=\"somepic.jpg\"";
 
     // Act
-    attribute a = attribute_construct_from_html(&err, html);
+    attribute_t a = attribute_construct_from_html(&err, html);
 
     // Assert
     EXPECT_EQ(err, OK);
@@ -28,7 +28,7 @@ TEST(ATTRIBUTE_CONSTRUCT_FROM_HTML, ATTRIBUTE_HAS_NO_VALUE) {
     const char *const html = "hidden";
 
     // Act
-    attribute a = attribute_construct_from_html(&err, html);
+    attribute_t a = attribute_construct_from_html(&err, html);
 
     // Assert
     EXPECT_EQ(err, OK);
@@ -67,7 +67,7 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_OPENING) {
     const char *const html = "<br>";
 
     // Act
-    tag *tag = tag_create_from_html(&err, html);
+    tag_t *tag = tag_create_from_html(&err, html);
 
     // Assert
     EXPECT_TRUE(tag != NULL);
@@ -84,7 +84,7 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_CLOSING) {
     const char *const html = "</br>";
 
     // Act
-    tag *tag = tag_create_from_html(&err, html);
+    tag_t *tag = tag_create_from_html(&err, html);
 
     // Assert
     EXPECT_TRUE(tag != NULL);
@@ -101,7 +101,7 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_NO_ATTRIBUTES) {
     const char *const html = "<br>";
 
     // Act
-    tag *tag = tag_create_from_html(&err, html);
+    tag_t *tag = tag_create_from_html(&err, html);
 
     // Assert
     EXPECT_TRUE(tag != NULL);
@@ -120,7 +120,7 @@ TEST(TAG_CREATE_FROM_HTML, VALID_TAG_MULTIPLE_ATTRIBUTES) {
         "<img source=\"somepic.jpg\" width=\"800\" height=\"600\">";
 
     // Act
-    tag *tag = tag_create_from_html(&err, html);
+    tag_t *tag = tag_create_from_html(&err, html);
 
     // Assert
     EXPECT_TRUE(tag != NULL);

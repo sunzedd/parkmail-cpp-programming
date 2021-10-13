@@ -1,6 +1,6 @@
 #include "tag.h"
 
-void attribute_destroy_internals(attribute *attrib) {
+void attribute_destroy_internals(attribute_t *attrib) {
     if (attrib->name) {
         free(attrib->name);
         attrib->name = NULL;
@@ -11,8 +11,9 @@ void attribute_destroy_internals(attribute *attrib) {
     }
 }
 
-attribute attribute_construct_from_html(int *err, const char *const html_str) {
-    attribute result = {0};
+attribute_t attribute_construct_from_html(int *err,
+                                          const char *const html_str) {
+    attribute_t result = {0};
 
     int token_count = 0;
     char **tokenized_html = split_string(err, &token_count, html_str, "=");
@@ -61,14 +62,14 @@ int tag_validate_html_str(const char *const tag_str) {
     return OK;
 }
 
-static int tag_read_attributes(tag *tag, const char **const html_str_array,
+static int tag_read_attributes(tag_t *tag, const char **const html_str_array,
                                int str_count) {
     if (!tag || !html_str_array || str_count == 0) {
         return ERR_INVALID_ARGS;
     }
 
-    attribute *attrib_array =
-        (attribute *)malloc(sizeof(attribute) * str_count);
+    attribute_t *attrib_array =
+        (attribute_t *)malloc(sizeof(attribute_t) * str_count);
     if (!attrib_array) {
         return ERR_MEM_ALLOC;
     }
@@ -92,7 +93,7 @@ static int tag_read_attributes(tag *tag, const char **const html_str_array,
     return err;
 }
 
-static int tag_read_name_and_type(tag *tag, const char *const html_str) {
+static int tag_read_name_and_type(tag_t *tag, const char *const html_str) {
     if (!tag || !html_str) {
         return ERR_INVALID_ARGS;
     }
@@ -120,7 +121,7 @@ static int tag_read_name_and_type(tag *tag, const char *const html_str) {
     return err;
 }
 
-void tag_destroy(tag *tag) {
+void tag_destroy(tag_t *tag) {
     if (!tag) {
         return;
     }
@@ -138,8 +139,8 @@ void tag_destroy(tag *tag) {
     tag = NULL;
 }
 
-static tag *tag_create(int *err) {
-    tag *tag = (struct tag *)malloc(sizeof(struct tag));
+static tag_t *tag_create(int *err) {
+    tag_t *tag = (tag_t *)malloc(sizeof(tag_t));
     if (!tag) {
         *err = ERR_MEM_ALLOC;
         return NULL;
@@ -153,7 +154,7 @@ static tag *tag_create(int *err) {
     return tag;
 }
 
-tag *tag_create_from_html(int *err, const char *const tag_str) {
+tag_t *tag_create_from_html(int *err, const char *const tag_str) {
     *err = tag_validate_html_str(tag_str);
     if (*err != OK) {
         return NULL;
@@ -166,7 +167,7 @@ tag *tag_create_from_html(int *err, const char *const tag_str) {
         return NULL;
     }
 
-    tag *tag = tag_create(err);
+    tag_t *tag = tag_create(err);
     if (!tag) {
         destroy_string_array(tokenized_html, tokenized_html_str_count);
         return NULL;

@@ -4,14 +4,16 @@
 
 #include "tag.h"
 
-void print_tag(const tag *const tag) {
+void print_tag(const tag_t *tag) {
     if (!tag) {
         printf("tag is NULL\n\n");
         return;
     }
+
     printf("name:               %s\n", tag->name);
     printf("type:               %d\n", tag->type);
     printf("attributes count:   %d\n", tag->attribute_count);
+
     for (int i = 0; i < tag->attribute_count; i++) {
         printf("\t%s", tag->attributes[i].name);
         if (tag->attributes[i].value) {
@@ -28,11 +30,11 @@ int main(void) {
 
     int err = OK;
 
-    tag *tag1 = tag_create_from_html(&err, t1);
+    tag_t *tag1 = tag_create_from_html(&err, t1);
     printf("log error: %d\n", err);
-    tag *tag2 = tag_create_from_html(&err, t2);
+    tag_t *tag2 = tag_create_from_html(&err, t2);
     printf("log error: %d\n", err);
-    tag *tag3 = tag_create_from_html(&err, t3);
+    tag_t *tag3 = tag_create_from_html(&err, t3);
     printf("log error: %d\n", err);
 
     print_tag(tag1);
