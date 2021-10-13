@@ -134,7 +134,8 @@ void tag_destroy(tag_t *tag) {
             attribute_destroy_internals(&tag->attributes[i]);
         }
     }
-
+    
+    free(tag->attributes);
     free(tag);
     tag = NULL;
 }
