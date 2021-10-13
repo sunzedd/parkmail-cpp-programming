@@ -13,39 +13,39 @@ void attribute_destroy_internals(attribute_t *attrib) {
 
 attribute_t attribute_construct_from_html(int *err,
                                           const char *const html_str) {
-    attribute_t result = {0};
-
     int token_count = 0;
     char **tokenized_html = split_string(err, &token_count, html_str, "=");
 
-    if (token_count == 1) {
+    attribute_t result = {0};
+
+    if (token_count > 0) {
         result.name = strdup(tokenized_html[0]);
-        if (!result.name) {
-            *err = ERR_MEM_ALLOC;
-        }
-        result.value = NULL;
-    } else if (token_count == 2) {
-        result.name = strdup(tokenized_html[0]);
-        if (!result.name) {
+
+        if (result.name) {
+            if (token_count == 2) {
+                if (strlen(tokenized_html[1]) > 2) {
+                    // Избавляемся от кавычек в значении атрибута
+                    size_t value_char_count = strlen(tokenized_html[1]) - 2;
+
+                    result.value = (char*)malloc(sizeof(char) * (value_char_count + 1)); // + 1 для терминатора строки
+                    if (result.value) {
+                        result.value = memcpy(result.value, tokenized_html[1] + 1, value_char_count);
+                    } else {
+                        *err = ERR_MEM_ALLOC;
+                    }
+                } else {
+                    *err = ERR_INVALID_HTML_SYNTAX;
+                }
+            }
+        } else {
             *err = ERR_MEM_ALLOC;
         }
 
-        size_t value_str_size = strlen(tokenized_html[1]) - 2;
-        result.value = (char *)malloc(value_str_size);
-        if (!result.value) {
-            *err = ERR_MEM_ALLOC;
-        } else {
-            memcpy(result.value, tokenized_html[1] + 1, value_str_size);
-        }
     } else {
         *err = ERR_INVALID_HTML_SYNTAX;
     }
 
     destroy_string_array(tokenized_html, token_count);
-
-    if (*err != OK) {
-        attribute_destroy_internals(&result);
-    }
 
     return result;
 }
