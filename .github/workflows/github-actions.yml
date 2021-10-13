@@ -29,5 +29,5 @@ jobs:
           make
 
       - name: run tests
-        run: ./build/tests/test
+        run: ./build/parsetag/tests/test
         
