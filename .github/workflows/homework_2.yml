@@ -1,0 +1,29 @@
+name: homework_2
+on:
+  push:
+    branches:
+      - homework_2
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./homework_2
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install dependencies
+        run: sudo apt install valgrind clang-tidy libtest-dev lcov
+
+      - name: build
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
