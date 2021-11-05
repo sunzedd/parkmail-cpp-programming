@@ -1,11 +1,18 @@
 #include <stdio.h>
 #include <mood/mood_determine.h>
+#include <reader_utils/read_file.h>
 
 int main( void ) {
-    const char *const s = "Hello :) :( :( :((((:( a\n\0";
+    char *s = NULL;
+    mood_error_t err = ERR_OK;
+    err = read_file("/home/sunz/park_mail/parkmail-cpp-programming/homework_2/examples/data/1.txt", &s);
+    if (err != ERR_OK) {
+        printf("error has occurred: %d", err);
+        return 0;
+    }
 
     mood_t mood;
-    mood_error_t err = mood_determine(s, &mood);
+    err = mood_determine(s, &mood);
     if (err == ERR_OK) {
         printf("mood is ");
         switch (mood) {

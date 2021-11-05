@@ -1,5 +1,4 @@
 set(SOURCES src/test_func.c)
 add_library(mood_mp SHARED ${SOURCES})
 target_include_directories(mood_mp PUBLIC include)
-target_link_libraries(mood_mp PUBLIC reader_utils
-                              PUBLIC errors)
+target_link_libraries(mood_mp PUBLIC errors)

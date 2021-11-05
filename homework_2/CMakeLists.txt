@@ -14,4 +14,5 @@ add_subdirectory(lib/mood_mp)
 add_executable(homework_2 examples/main.c)
 
 target_link_libraries(homework_2 mood
-                                 mood_mp)
+                                 mood_mp
+                                 reader_utils)
