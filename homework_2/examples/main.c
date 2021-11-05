@@ -1,5 +1,5 @@
-#include <moodcheck/test_func.h>
-#include <moodcheck_mp/test_func.h>
+#include <mood/test_func.h>
+#include <mood_mp/test_func.h>
 
 int main( void ) {
     mood_test_func();
