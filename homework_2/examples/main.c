@@ -25,5 +25,6 @@ int main( void ) {
         printf("error occurred\n");
     }
 
+    free(s);
     return 0;
 }
