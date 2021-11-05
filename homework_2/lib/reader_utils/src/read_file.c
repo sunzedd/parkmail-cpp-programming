@@ -1,7 +1,7 @@
 #include <reader_utils/read_file.h>
 
-mood_error_t read_file(const char *const filepath, char *out_str) {
-    if (out_str || !filepath) {
+mood_error_t read_file(const char *const filepath, char **out_str) {
+    if (!out_str || *out_str || !filepath) {
         return ERR_INVALID_ARG;
     }
 
@@ -15,11 +15,12 @@ mood_error_t read_file(const char *const filepath, char *out_str) {
 
     fseek(file, 0, SEEK_END);
     file_size = ftell(file);
+    fseek (file, 0, SEEK_SET);
 
     if (file_size > 0) {
-        out_str = (char *)malloc(sizeof(char) * file_size);
-        if (out_str) {
-            size_t bytes_read = fread(out_str, 1, file_size, file);
+        *out_str = (char *)malloc(sizeof(char) * file_size);
+        if (*out_str) {
+            size_t bytes_read = fread(*out_str, 1, file_size, file);
             if (bytes_read == 0) {
                 err = ERR_BAD_FILE;
             }
@@ -33,8 +34,8 @@ mood_error_t read_file(const char *const filepath, char *out_str) {
     fclose(file);
 
     if (err != ERR_OK) {
-        if (out_str) {
-            free(out_str);
+        if (*out_str) {
+            free(*out_str);
         }
     }
 
