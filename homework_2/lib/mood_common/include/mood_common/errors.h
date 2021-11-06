@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MOOD_COMMON_ERRORS_H
+#define MOOD_COMMON_ERRORS_H
 
 typedef enum {
     ERR_OK = 0,
@@ -8,3 +9,5 @@ typedef enum {
     ERR_BAD_FILE = -4,
     ERR_EMPTY_FILE = -5
 } mood_error_t;
+
+#endif

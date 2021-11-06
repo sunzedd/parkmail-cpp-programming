@@ -1,6 +1,6 @@
-#include <stdio.h>
 #include <mood/mood_determine.h>
 #include <reader_utils/read_file.h>
+#include <stdio.h>
 
 int main( void ) {
     char *s = NULL;
@@ -11,7 +11,7 @@ int main( void ) {
         return 0;
     }
 
-    mood_t mood;
+    mood_t mood = 0;
     err = mood_determine(s, &mood);
     if (err == ERR_OK) {
         printf("mood is ");
