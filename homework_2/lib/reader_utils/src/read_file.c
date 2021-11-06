@@ -18,10 +18,12 @@ mood_error_t read_file(const char *const filepath, char **out_str) {
     fseek (file, 0, SEEK_SET);
 
     if (file_size > 0) {
-        *out_str = (char *)malloc(sizeof(char) * file_size);
+        *out_str = (char *)malloc(sizeof(char) * (file_size + 1));
         if (*out_str) {
             size_t bytes_read = fread(*out_str, 1, file_size, file);
-            if (bytes_read == 0) {
+            if (bytes_read > 0) {
+                (*out_str)[file_size] = '\0';
+            } else {
                 err = ERR_BAD_FILE;
             }
         } else {
