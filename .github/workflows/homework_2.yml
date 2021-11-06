@@ -40,6 +40,7 @@ jobs:
           clang-tidy -checks=* -header-filter=. -p ./build/ examples/main.c
 
       - name: lint multiprocessed
+        run:
           clang-tidy -checks=* -header-filter=. -p ./build_mp/ examples/main.c
 
       - name: memcheck
@@ -49,3 +50,4 @@ jobs:
       - name: memcheck multiprocessed
         run: |
           valgrind ./build_mp/homework_2
+
