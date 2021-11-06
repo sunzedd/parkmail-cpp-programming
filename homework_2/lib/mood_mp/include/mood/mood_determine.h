@@ -2,8 +2,8 @@
 #define MOOD_MOOD_DETERMINE_H
 
 #include <mood_common/errors.h>
-#include <mood_common/mood_state.h>
 #include <mood_common/mood_common.h>
+#include <mood_common/mood_state.h>
 
 mood_error_t mood_determine(const char *str, mood_t *out);
 

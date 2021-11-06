@@ -33,6 +33,7 @@
 
 # directories
 **/build/
+**/build_mp/
 **/cmake-build-debug/
 **/cmake-build-release/
 **/.vscode/

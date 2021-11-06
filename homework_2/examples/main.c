@@ -1,6 +1,7 @@
 #include <mood/mood_determine.h>
 #include <reader_utils/read_file.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(void) {
     char *s = NULL;

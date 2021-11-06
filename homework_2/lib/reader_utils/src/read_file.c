@@ -1,4 +1,6 @@
-#include <reader_utils/read_file.h>
+#include "reader_utils/read_file.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 mood_error_t read_file(const char *const filepath, char **out_str) {
     if (!out_str || *out_str || !filepath) {
