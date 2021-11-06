@@ -23,14 +23,6 @@ typedef struct worker_data {
     } region_indices;
 } worker_data_t;
 
-static int get_digraph_mood_value(char c) {
-    if (c == ')')
-        return 1;
-    if (c == '(')
-        return -1;
-    return 0;
-}
-
 static mood_error_t count_digraphs_in_region(const char *buf, size_t buf_size,
                                              size_t region_begin_idx,
                                              size_t region_end_idx,

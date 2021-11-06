@@ -13,6 +13,11 @@ add_subdirectory(lib/mood_mp)
 
 add_executable(homework_2 examples/main.c)
 
-target_link_libraries(homework_2
-                                 mood_mp
-                                 reader_utils)
+option(MOODLIB_MP "Build with parallel version of mood library")
+if(MOODLIB_MP)
+    set(LIBS mood_mp reader_utils)
+else()
+    set(LIBS mood reader_utils)
+endif()
+
+target_link_libraries(homework_2 ${LIBS})

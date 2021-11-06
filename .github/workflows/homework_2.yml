@@ -21,17 +21,31 @@ jobs:
       - name: install dependencies
         run: sudo apt install valgrind clang-tidy libgtest-dev
 
-      - name: run build
+      - name: build
         run: |
           mkdir build
           cd build
           cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
           make
 
-      - name: run linter
+      - name: build multiprocessed
+        run: |
+          mkdir build_mp
+          cd build_mp
+          cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DMOODLIB_MP=ON
+          make
+
+      - name: lint
         run: |
           clang-tidy -checks=* -header-filter=. -p ./build/ examples/main.c
 
-      - name: run memcheck
+      - name: lint multiprocessed
+          clang-tidy -checks=* -header-filter=. -p ./build_mp/ examples/main.c
+
+      - name: memcheck
         run: |
           valgrind ./build/homework_2
+        
+      - name: memcheck multiprocessed
+        run: |
+          valgrind ./build_mp/homework_2
