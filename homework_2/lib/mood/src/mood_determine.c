@@ -1,6 +1,6 @@
+#include "mood/mood_determine.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include "mood/mood_determine.h"
 
 static mood_error_t count_digraphs(const char *const str,
                                    size_t *out_positive_count,
@@ -17,8 +17,7 @@ static mood_error_t count_digraphs(const char *const str,
     for (const char *cur = &str[0]; *cur != '\0'; ++cur) {
         if (*cur == ':') {
             met_colon = true;
-        }
-        else {
+        } else {
             if (met_colon) {
                 if (*cur == ')') {
                     ++(*out_positive_count);
