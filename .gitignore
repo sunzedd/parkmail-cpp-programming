@@ -37,3 +37,6 @@
 **/cmake-build-release/
 **/.vscode/
 **/.idea/
+
+**/scripts/
+
