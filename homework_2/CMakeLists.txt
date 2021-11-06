@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-g3 -Wall -Werror -pedantic)
 
-add_subdirectory(lib/errors)
+add_subdirectory(lib/mood_common)
 add_subdirectory(lib/reader_utils)
 add_subdirectory(lib/mood)
 add_subdirectory(lib/mood_mp)
