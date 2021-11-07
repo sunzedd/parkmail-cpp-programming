@@ -48,11 +48,7 @@ jobs:
       - name: Test (Unit) with memcheck
         run: |
           cd build
-          valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_report_mood.txt ./lib/mood/tests/test_mood
-          valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_report_moodmp.txt ./lib/mood_mp/tests/test_mood_mp
-
-          
           cp -r ../lib/reader_utils/tests/data/ .
-          valgrind --leak-check=full --show-leak-kinds=all \
-          --log-file=memory_report_reader_utils.txt \ 
-          ./lib/reader_utils/tests/test_reader_utils
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_mood.txt ./lib/mood/tests/test_mood
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_moodmp.txt ./lib/mood_mp/tests/test_mood_mp
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_reader_utils.txt ./lib/reader_utils/tests/test_reader_utils
