@@ -14,18 +14,18 @@ int main(void) {
         return 0;
     }
 
-    mood_t mood = NEUTRAL;
+    mood_t mood = MOOD_NEUTRAL;
     err = mood_determine(s, &mood);
     if (err == ERR_OK) {
         printf("mood is ");
         switch (mood) {
-        case NEUTRAL:
+        case MOOD_NEUTRAL:
             printf("neutral\n");
             break;
-        case NEGATIVE:
+        case MOOD_NEGATIVE:
             printf("negative\n");
             break;
-        case POSITIVE:
+        case MOOD_POSITIVE:
             printf("positive\n");
             break;
         default:

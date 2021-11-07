@@ -2,9 +2,9 @@
 #define MOOD_COMMON_MOOD_STATE_H
 
 typedef enum {
-    POSITIVE,
-    NEUTRAL,
-    NEGATIVE,
+    MOOD_POSITIVE = 1,
+    MOOD_NEUTRAL = 0,
+    MOOD_NEGATIVE = -1,
 } mood_t;
 
 #endif

@@ -2,12 +2,13 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-static mood_error_t count_digraphs(const char *const str, size_t *out_score) {
-    if (!str || !out_score) {
+static mood_error_t count_mood_value(const char *const str,
+                                     size_t *out_mood_value) {
+    if (!str || !out_mood_value) {
         return ERR_NULLPTR_REFERENCE;
     }
 
-    *out_score = 0;
+    *out_mood_value = 0;
 
     bool met_colon = false;
 
@@ -16,7 +17,7 @@ static mood_error_t count_digraphs(const char *const str, size_t *out_score) {
             met_colon = true;
         } else {
             if (met_colon) {
-                *out_score += get_digraph_mood_value(*cur);
+                *out_mood_value += character_mood_value(*cur);
                 met_colon = false;
             }
         }
@@ -30,16 +31,16 @@ mood_error_t mood_determine(const char *const str, mood_t *out) {
         return ERR_NULLPTR_REFERENCE;
     }
 
-    size_t mood_score = 0;
+    size_t mood_value = 0;
 
-    mood_error_t err = count_digraphs(str, &mood_score);
+    mood_error_t err = count_mood_value(str, &mood_value);
     if (err == ERR_OK) {
-        if (mood_score == 0) {
-            *out = NEUTRAL;
-        } else if (mood_score > 0) {
-            *out = POSITIVE;
+        if (mood_value == 0) {
+            *out = MOOD_NEUTRAL;
+        } else if (mood_value > 0) {
+            *out = MOOD_POSITIVE;
         } else {
-            *out = NEGATIVE;
+            *out = MOOD_NEGATIVE;
         }
     }
 
