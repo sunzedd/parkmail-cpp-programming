@@ -48,10 +48,11 @@ jobs:
       - name: Test (Unit) with memcheck
         run: |
           cd build
+          mkdir memory_report
           cp -r ../lib/reader_utils/tests/data/ .
-          valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_report/mood.txt ./lib/mood/tests/test_mood
-          valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_report/moodmp.txt ./lib/mood_mp/tests/test_mood_mp
-          valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_report/reader_utils.txt ./lib/reader_utils/tests/test_reader_utils
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/mood.txt ./lib/mood/tests/test_mood
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/moodmp.txt ./lib/mood_mp/tests/test_mood_mp
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/reader_utils.txt ./lib/reader_utils/tests/test_reader_utils
 
       - name: Upload memory report
         uses: actions/upload-artifact@v2
