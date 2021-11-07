@@ -12,21 +12,25 @@
 typedef struct shared_data {
     char *buf;
     size_t size;
-    long long int *mood_score;
+    long long int *workers_output;
 } shared_data_t;
 
 typedef struct worker_data {
-    shared_data_t data;
+    unsigned int id;
+    shared_data_t shared;
     struct {
         size_t begin;
         size_t end;
     } region_bound_indices;
 } worker_data_t;
 
-static mood_error_t count_mood_value_in_region(const char *buf, size_t buf_size,
-                                               size_t region_begin_idx,
-                                               size_t region_end_idx,
-                                               size_t *out_mood_value) {
+static void count_mood_value_in_region(const char *buf, size_t buf_size,
+                                       size_t region_begin_idx,
+                                       size_t region_end_idx,
+                                       long long int *out_mood_value) {
+    assert(buf);
+    assert(out_mood_value);
+
     bool met_colon = false;
 
     const char *cur = &buf[region_begin_idx];
@@ -47,8 +51,6 @@ static mood_error_t count_mood_value_in_region(const char *buf, size_t buf_size,
             *out_mood_value += character_mood_value(*cur);
         }
     }
-
-    return ERR_OK;
 }
 
 static void run_worker(worker_data_t wd) {
@@ -57,42 +59,36 @@ static void run_worker(worker_data_t wd) {
         exit(EXIT_FAILURE);
     }
     if (pid == 0) {
-        size_t mood_value = 0;
-        count_mood_value_in_region(wd.data.buf, wd.data.size,
+        long long int region_mood_value = 0;
+        count_mood_value_in_region(wd.shared.buf, wd.shared.size,
                                    wd.region_bound_indices.begin,
-                                   wd.region_bound_indices.end, &mood_value);
-        // TODO: critical section
-        // mutex_lock();
-        *(wd.data.mood_score) += mood_value;
-        // mutex_unlock();
-        // ---
+                                   wd.region_bound_indices.end,
+                                   &region_mood_value);
+        wd.shared.workers_output[wd.id] = region_mood_value;
         exit(EXIT_SUCCESS);
     }
 }
 
 static void dispatch_workers_and_wait(shared_data_t data, size_t worker_count) {
-    assert(worker_count > 1);
     size_t worker_region_size = data.size / worker_count;
     size_t unowned_region_size = data.size - worker_region_size * worker_count;
 
     size_t region_begin_idx = 0;
     size_t region_end_idx = region_begin_idx + worker_region_size;
 
-    for (int i = 0; i < worker_count - 1; ++i) {
-        worker_data_t wd = {.data = data,
-                            .region_bound_indices = {.begin = region_begin_idx,
-                                                     .end = region_end_idx}};
+    for (int i = 0; i < worker_count; ++i) {
+        worker_data_t wd = {
+                .id = i,
+                .shared = data,
+                .region_bound_indices = { region_begin_idx, region_end_idx }
+        };
 
         region_begin_idx += worker_region_size;
-        region_end_idx += worker_region_size;
-
-        run_worker(wd);
-    }
-
-    if (unowned_region_size > 0) {
-        worker_data_t wd = {.data = data,
-                            .region_bound_indices = {.begin = region_begin_idx,
-                                                     .end = region_end_idx}};
+        if (i == worker_count - 2) {
+            region_end_idx += worker_region_size + unowned_region_size;
+        } else {
+            region_end_idx += worker_region_size;
+        }
 
         run_worker(wd);
     }
@@ -102,50 +98,78 @@ static void dispatch_workers_and_wait(shared_data_t data, size_t worker_count) {
     { }
 }
 
+static mood_error_t allocate_shared_memory(char **out_buf, size_t buf_size,
+                                           long long int **out_workers_output,
+                                           size_t worker_count) {
+    assert(out_buf && !(*out_buf));
+    assert(out_workers_output && !(*out_workers_output));
+
+    *out_buf = (char *)mmap(NULL, buf_size,
+                            PROT_READ | PROT_WRITE,
+                            MAP_SHARED | MAP_ANONYMOUS,
+                            -1, 0);
+    if (!(*out_buf)) {
+        return ERR_SHARED_MEM_BAD_ALLOC;
+    }
+
+    *out_workers_output =
+            (long long int *)mmap(NULL,
+                                  sizeof(long long int) * worker_count,
+                                  PROT_READ | PROT_WRITE,
+                                  MAP_SHARED | MAP_ANONYMOUS,
+                                  -1, 0);
+    if (!(*out_workers_output)) {
+        munmap(*out_buf, buf_size);
+        return ERR_SHARED_MEM_BAD_ALLOC;
+    }
+
+    return ERR_OK;
+}
+
+static long long int sum_workers_output(const long long int *const workers_output,
+                                        size_t worker_count) {
+    assert(workers_output);
+
+    long long int result = 0;
+    for (int i = 0; i < worker_count; ++i) {
+        result += workers_output[i];
+    }
+
+    return result;
+}
+
 mood_error_t mood_determine(const char *str, mood_t *out) {
     if (!str || !out) {
         return ERR_NULLPTR_REFERENCE;
     }
 
     size_t shared_buf_size = strlen(str) + 1;
-    char *shared_buf =
-        (char *)mmap(NULL, shared_buf_size, PROT_READ | PROT_WRITE,
-                     MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-    if (!shared_buf) {
-        return ERR_SHARED_MEM_BAD_ALLOC;
-    }
-
-    long long int *mood_score = (long long int *)mmap(
-        NULL, sizeof(long long int), PROT_READ | PROT_WRITE,
-        MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-    if (!mood_score) {
-        munmap(shared_buf, shared_buf_size);
-        return ERR_SHARED_MEM_BAD_ALLOC;
-    }
-
-    memcpy(shared_buf, str, shared_buf_size - 1);
-    *mood_score = 0;
-
-    mood_error_t err = ERR_OK;
     size_t worker_count = get_nprocs();
     if (shared_buf_size < worker_count) {
         worker_count = 1;
     }
+    char *shared_buf = NULL;
+    long long int *workers_output = NULL;
 
-    shared_data_t worker_data = {
-        .buf = shared_buf, .size = shared_buf_size, .mood_score = mood_score};
-
-    dispatch_workers_and_wait(worker_data, worker_count);
-
-    if (*(worker_data.mood_score) == 0) {
-        *out = MOOD_NEUTRAL;
-    } else if (*(worker_data.mood_score) > 0) {
-        *out = MOOD_POSITIVE;
-    } else {
-        *out = MOOD_NEGATIVE;
+    mood_error_t err = allocate_shared_memory(&shared_buf, shared_buf_size,
+                                              &workers_output, worker_count);
+    if (err != ERR_OK) {
+        return err;
     }
 
+    memcpy(shared_buf, str, shared_buf_size - 1);
+
+    shared_data_t worker_shared_data = {
+        .buf = shared_buf,
+        .size = shared_buf_size,
+        .workers_output = workers_output
+    };
+
+    dispatch_workers_and_wait(worker_shared_data, worker_count);
+    long long int mood_sum = sum_workers_output(workers_output, worker_count);
+    *out = mood_determine_from_value(mood_sum);
+
     munmap(shared_buf, shared_buf_size);
-    munmap(mood_score, sizeof(long long int));
+    munmap(workers_output, sizeof(long long int) * worker_count);
     return err;
 }
