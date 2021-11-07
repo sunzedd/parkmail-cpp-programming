@@ -54,11 +54,11 @@ jobs:
 
       - name: Test multiprocessed
         run: |
-          cd build && ctest
+          cd build_mp && ctest
 
       - name: Test multiprocessed with memcheck
         run: |
-          cd build
+          cd build_mp
           valgrind --leak-check=full --show-leak-kinds=all ./lib/mood_mp/tests/test_mood
 
       - name: Memcheck
