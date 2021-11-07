@@ -56,6 +56,6 @@ jobs:
           # но знаю, что для ctest-теста можно определить директорию, в которой тест
           # должен быть запущен
           
-          cd lib/reader_utils/tests/
+          cd ../lib/reader_utils/tests/
           valgrind --leak-check=full --show-leak-kinds=all \
           ../../../build/lib/reader_utils/tests/test_reader_utils
