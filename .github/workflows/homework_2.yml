@@ -58,5 +58,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: report_memory
-          path: ./build/memory_report
+          path: ./build/memory_report/**
           if-no-files-found: error
