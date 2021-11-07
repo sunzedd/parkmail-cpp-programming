@@ -51,11 +51,6 @@ jobs:
           valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_report_mood.txt ./lib/mood/tests/test_mood
           valgrind --leak-check=full --show-leak-kinds=all --log-file=memory_report_moodmp.txt ./lib/mood_mp/tests/test_mood_mp
 
-          # Запуск теста из этой директории, так как тест использует файлы из нее.
-          # p.s. не разобрался, как запустить ctest под valgrind-ом без сильных заморочек,
-          # но знаю, что для ctest-теста можно определить директорию, в которой тест
-          # должен быть запущен
-          
           cd ../lib/reader_utils/tests/
           valgrind --leak-check=full --show-leak-kinds=all \
           --log-file=memory_report_reader_utils.txt \ 
