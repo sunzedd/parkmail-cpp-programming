@@ -26,5 +26,4 @@ else()
     set(LIBS mood reader_utils)
 endif()
 
-
 target_link_libraries(homework_2 ${LIBS})

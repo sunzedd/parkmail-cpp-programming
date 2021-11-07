@@ -28,7 +28,7 @@ jobs:
           cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
           make
 
-      - name: Build multiprocessed
+      - name: Build multiprocessed version
         run: |
           mkdir build_mp
           cd build_mp
@@ -37,36 +37,25 @@ jobs:
 
       - name: Lint
         run: |
-          clang-tidy -checks=* -header-filter=. -p ./build/ examples/main.c
-
-      - name: Lint multiprocessed
-        run: |
-          clang-tidy -checks=* -header-filter=. -p ./build_mp/ examples/main.c
-
-      - name: Test
+          clang-tidy -checks=* -header-filter=.* -p ./build/ examples/main.c
+          clang-tidy -checks=* -header-filter=.* -p ./build_mp/ examples/main.c
+          
+      - name: Test (Unit)
         run: |
           cd build
-          ./lib/mood/tests/test_mood
+          ctest --verbose --output-on-failure
 
-      - name: Test with memcheck
+      - name: Test (Unit) with memcheck
         run: |
           cd build
           valgrind --leak-check=full --show-leak-kinds=all ./lib/mood/tests/test_mood
-
-      - name: Test multiprocessed
-        run: |
-          cd build_mp
-          ./lib/mood_mp/tests/test_mood_mp
-
-      - name: Test multiprocessed with memcheck
-        run: |
-          cd build_mp
           valgrind --leak-check=full --show-leak-kinds=all ./lib/mood_mp/tests/test_mood_mp
 
-      - name: Memcheck
-        run: |
-          valgrind --leak-check=full --show-leak-kinds=all ./build/homework_2
-        
-      - name: Memcheck multiprocessed
-        run: |
-          valgrind --leak-check=full --show-leak-kinds=all ./build_mp/homework_2
+          # Запуск теста из этой директории, так как тест использует файлы из нее.
+          # p.s. не разобрался, как запустить ctest под valgrind-ом без сильных заморочек,
+          # но знаю, что для ctest-теста можно определить директорию, в которой тест
+          # должен быть запущен
+          
+          cd lib/reader_utils/tests/
+          valgrind --leak-check=full --show-leak-kinds=all \
+          ../../../build/lib/reader_utils/tests/test_reader_utils
