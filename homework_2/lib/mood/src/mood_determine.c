@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 static mood_error_t count_mood_value(const char *const str,
-                                     size_t *out_mood_value) {
+                                     long long int *out_mood_value) {
     if (!str || !out_mood_value) {
         return ERR_NULLPTR_REFERENCE;
     }
@@ -31,7 +31,7 @@ mood_error_t mood_determine(const char *const str, mood_t *out) {
         return ERR_NULLPTR_REFERENCE;
     }
 
-    size_t mood_value = 0;
+    long long int mood_value = 0;
 
     mood_error_t err = count_mood_value(str, &mood_value);
     if (err == ERR_OK) {
