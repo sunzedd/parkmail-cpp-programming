@@ -15,38 +15,56 @@ jobs:
         working-directory: ./homework_2
 
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: install dependencies
+      - name: Install dependencies
         run: sudo apt install valgrind clang-tidy libgtest-dev
 
-      - name: build
+      - name: Build
         run: |
           mkdir build
           cd build
           cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
           make
 
-      - name: build multiprocessed
+      - name: Build multiprocessed
         run: |
           mkdir build_mp
           cd build_mp
           cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DMOODLIB_MP=ON
           make
 
-      - name: lint
+      - name: Lint
         run: |
           clang-tidy -checks=* -header-filter=. -p ./build/ examples/main.c
 
-      - name: lint multiprocessed
-        run:
+      - name: Lint multiprocessed
+        run: |
           clang-tidy -checks=* -header-filter=. -p ./build_mp/ examples/main.c
 
-      - name: memcheck
+      - name: Test
+        run: |
+          cd build && ctest
+
+      - name: Test with memcheck
+        run: |
+          cd build
+          valgrind --leak-check=full --show-leak-kinds=all ./lib/mood/tests/test_mood
+
+      - name: Test multiprocessed
+        run: |
+          cd build && ctest
+
+      - name: Test multiprocessed with memcheck
+        run: |
+          cd build
+          valgrind --leak-check=full --show-leak-kinds=all ./lib/mood_mp/tests/test_mood
+
+      - name: Memcheck
         run: |
           valgrind --leak-check=full --show-leak-kinds=all ./build/homework_2
         
-      - name: memcheck multiprocessed
+      - name: Memcheck multiprocessed
         run: |
           valgrind --leak-check=full --show-leak-kinds=all ./build_mp/homework_2
