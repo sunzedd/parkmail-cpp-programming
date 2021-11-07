@@ -45,7 +45,8 @@ jobs:
 
       - name: Test
         run: |
-          cd build && ctest
+          cd build
+          ./lib/mood/tests/test_mood
 
       - name: Test with memcheck
         run: |
@@ -54,7 +55,8 @@ jobs:
 
       - name: Test multiprocessed
         run: |
-          cd build_mp && ctest
+          cd build_mp
+          ./lib/mood_mp/tests/test_mood_mp
 
       - name: Test multiprocessed with memcheck
         run: |

@@ -46,10 +46,7 @@ static void count_mood_value_in_region(const char *buf, size_t buf_size,
     }
 
     if (met_colon) {
-        if (cur + 1 <= buf + buf_size) {
-            ++cur;
-            *out_mood_value += character_mood_value(*cur);
-        }
+        *out_mood_value += character_mood_value(*cur);
     }
 }
 
