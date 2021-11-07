@@ -45,9 +45,8 @@ jobs:
 
       - name: memcheck
         run: |
-          valgrind ./build/homework_2
+          valgrind --leak-check=full --show-leak-kinds=all ./build/homework_2
         
       - name: memcheck multiprocessed
         run: |
-          valgrind ./build_mp/homework_2
-
+          valgrind --leak-check=full --show-leak-kinds=all ./build_mp/homework_2
