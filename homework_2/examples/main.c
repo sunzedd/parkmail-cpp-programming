@@ -3,39 +3,60 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(void) {
-    char *s = NULL;
-    mood_error_t err = ERR_OK;
-    err = read_file("/home/sunz/park_mail/parkmail-cpp-programming/homework_2/"
-                    "examples/data/1.txt",
-                    &s);
-    if (err != ERR_OK) {
-        printf("error has occurred: %d", err);
+#define ERROR_STRING_SIZE 64
+
+void print_usage() {
+    printf("\n");
+    printf("homework_2 usage:\n");
+    printf("\thomework_2 <filepath>\n\n");
+}
+void print_error(mood_error_t error) {
+    char error_string[ERROR_STRING_SIZE];
+    get_error_string(error, error_string);
+    printf("Error has occurred: %s\n", error_string);
+}
+void print_mood(mood_t mood) {
+    printf("Mood is ");
+    switch (mood)
+    {
+    case MOOD_NEUTRAL:
+        printf("neutral\n");
+        break;
+    case MOOD_NEGATIVE:
+        printf("negative\n");
+        break;
+    case MOOD_POSITIVE:
+        printf("positive\n");
+        break;
+    default:
+        printf("unknown\n");
+        break;
+    }
+}
+
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        print_usage();
         return 0;
     }
 
-    mood_t mood = MOOD_NEUTRAL;
-    err = mood_determine(s, &mood);
-    if (err == ERR_OK) {
-        printf("mood is ");
-        switch (mood) {
-        case MOOD_NEUTRAL:
-            printf("neutral\n");
-            break;
-        case MOOD_NEGATIVE:
-            printf("negative\n");
-            break;
-        case MOOD_POSITIVE:
-            printf("positive\n");
-            break;
-        default:
-            printf("unexpected result\n");
-            break;
+    char *data = NULL;
+    mood_error_t err = read_file(argv[1], &data);
+    
+    if (!err) {
+        mood_t mood;
+        err = mood_determine(data, &mood);
+        if (!err) {
+            print_mood(mood);
         }
-    } else {
-        printf("error occurred\n");
     }
 
-    free(s);
+    if (err) {
+        print_error(err);
+    }
+    if (data) {
+        free(data);
+    }
+
     return 0;
 }
