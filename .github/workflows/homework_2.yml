@@ -40,12 +40,12 @@ jobs:
           clang-tidy -checks=* -header-filter=.* -p ./build/ examples/basic_example_1/src/main.c
           clang-tidy -checks=* -header-filter=.* -p ./build_mp/ examples/basic_example_1/src/main.c
           
-      - name: Test (Unit)
+      - name: Test (unit)
         run: |
           cd build
           ctest --output-on-failure
 
-      - name: Test (Unit) with memcheck
+      - name: Test (unit) with memcheck
         run: |
           cd build
           mkdir memory_report
@@ -53,7 +53,19 @@ jobs:
           valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/mood.txt ./lib/mood/tests/test_mood
           valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/moodmp.txt ./lib/mood_mp/tests/test_mood_mp
           valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/reader_utils.txt ./lib/reader_utils/tests/test_reader_utils
-        
+      
+      - name: Test (stress / time measurement)
+        run: |
+          mkdir build/stress_test && mkdir build/stress_test/data
+          python3 ./scripts/datagen.py positive 1 build/stress_test/data/1mb.txt
+          python3 ./scripts/datagen.py positive 10 build/stress_test/data/10mb.txt
+          python3 ./scripts/datagen.py positive 100 build/stress_test/data/100mb.txt
+          python3 ./scripts/datagen.py positive 1000 build/stress_test/data/1gb.txt
+
+          cd build/stress_test/data
+          ../../examples/measure_time/mood > ../time_report_mood.txt
+          ../../examples/measure_time/mood_mp > ../time_report_mood_mp.txt
+
       - name: Compose coverage report
         run: |
           cd build
