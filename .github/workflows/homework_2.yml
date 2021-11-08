@@ -71,6 +71,6 @@ jobs:
       - name: Upload coverage report
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-report
+          name: report-coverage
           path: ./homework_2/build/coverage_report/
           if-no-files-found: error
