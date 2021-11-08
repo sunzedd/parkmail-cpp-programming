@@ -43,7 +43,6 @@ mood_error_t measure_avg_cpu_time_ms(const char *const input_data_filepath, doub
     return err;
 }
 
-
 int main() {
     double avg_time_1mb = 0;
     double avg_time_10mb = 0;
