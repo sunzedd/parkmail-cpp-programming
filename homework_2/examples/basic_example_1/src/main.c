@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ERROR_STRING_SIZE 64
-
 void print_usage() {
     printf("\n");
     printf("homework_2 usage:\n");
@@ -12,9 +10,38 @@ void print_usage() {
 }
 
 void print_error(mood_error_t error) {
-    char error_string[ERROR_STRING_SIZE];
-    get_error_string(error, error_string);
-    printf("Error has occurred: %s\n", error_string);
+    switch (error) {
+        case ERR_OK:
+            printf("no errors occurred\n");
+            break;
+        case ERR_INVALID_ARG:
+            printf("error: invalid argument\n");
+            break;
+        case ERR_NULLPTR_REFERENCE:
+            printf("error: usage of NULL-pointer\n");
+            break;
+        case ERR_BAD_ALLOC:
+            printf("error: failed to allocate heap memory\n");
+            break;
+        case ERR_BAD_FILE:
+            printf("error: file does not exists\n");
+            break;
+        case ERR_EMPTY_FILE:
+            printf("error: file is empty\n");
+            break;
+        case ERR_SHARED_MEM_BAD_RELEASE:
+            printf("error: failed to release shared memory block\n");
+            break;
+        case ERR_SHARED_MEM_BAD_ALLOC:
+            printf("error: failed to allocate shared memory block\n");
+            break;
+        case ERR_PROC_CREATE_FAILURE:
+            printf("error: failed to fork child process\n");
+            break;
+        default:
+            printf("error: unknown\n");
+            break;
+    }
 }
 
 void print_mood(mood_t mood) {

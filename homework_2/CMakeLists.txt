@@ -3,6 +3,8 @@ project(homework_2 C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_compile_options(-g3 -Wall -Werror -Wpedantic --coverage)
 add_link_options(--coverage)
 

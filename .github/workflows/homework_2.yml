@@ -37,8 +37,8 @@ jobs:
 
       - name: Lint
         run: |
-          clang-tidy -checks=* -header-filter=.* -p ./build/ examples/basic_example_1/src/main.c
-          clang-tidy -checks=* -header-filter=.* -p ./build_mp/ examples/basic_example_1/src/main.c
+          run-clang-tidy -p build
+          run-clang-tidy -p build_mp
           
       - name: Test (unit)
         run: |

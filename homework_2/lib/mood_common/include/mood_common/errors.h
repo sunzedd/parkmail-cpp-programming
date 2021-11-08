@@ -13,6 +13,4 @@ typedef enum {
     ERR_PROC_CREATE_FAILURE = -8
 } mood_error_t;
 
-void get_error_string(mood_error_t error, char *out);
-
 #endif
