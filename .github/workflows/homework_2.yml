@@ -43,7 +43,9 @@ jobs:
       - name: Test (unit)
         run: |
           cd build
-          ctest --output-on-failure
+          ctest -R test_mood --output-on-failure
+          ctest -R test_mood_mp --output-on-failure
+          ctest -R test_reader_utils --output-on-failure
 
       - name: Test (unit) with memcheck
         run: |
@@ -54,17 +56,16 @@ jobs:
           valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/moodmp.txt ./lib/mood_mp/tests/test_mood_mp
           valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/reader_utils.txt ./lib/reader_utils/tests/test_reader_utils
       
-      - name: Test (stress / time measurement)
+      - name: Test (stress)
         run: |
-          mkdir build/stress_test && mkdir build/stress_test/data
-          python3 ./scripts/datagen.py positive 1 build/stress_test/data/1mb.txt
-          python3 ./scripts/datagen.py positive 10 build/stress_test/data/10mb.txt
-          python3 ./scripts/datagen.py positive 100 build/stress_test/data/100mb.txt
-          python3 ./scripts/datagen.py positive 1000 build/stress_test/data/1gb.txt
+          mkdir build/tests/stress/data
+          python3 tests/stress/scripts/datagen.py neutral 1 build/tests/stress/data/1mb.txt
+          python3 tests/stress/scripts/datagen.py neutral 10 build/tests/stress/data/10mb.txt
+          python3 tests/stress/scripts/datagen.py neutral 100 build/tests/stress/data/100mb.txt
+          python3 tests/stress/scripts/datagen.py neutral 1000 build/tests/stress/data/1gb.txt
 
-          cd build/stress_test/
-          ../examples/measure_time/mood/measure_time_mood > time_report_mood.txt
-          ../examples/measure_time/mood_mp/measure_time_mood_mp > time_report_mood_mp.txt
+          cd build
+          ctest -R stress_mood --verbose
 
       - name: Compose coverage report
         run: |
@@ -96,10 +97,10 @@ jobs:
           path: ./homework_2/build/coverage_report/
           if-no-files-found: error
 
-      - name: Upload stress test report
-        uses: actions/upload-artifact@v2
-        with:
-          name: report-time
-          path: |
-           ./homework_2/build/stress_test/time_report_mood.txt
-           ./homework_2/build/stress_test/time_report_mood_mp.txt
+      # - name: Upload stress test report
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: report-time
+      #     path: |
+      #      ./homework_2/build/stress_test/time_report_mood.txt
+      #      ./homework_2/build/stress_test/time_report_mood_mp.txt

@@ -1,2 +1,0 @@
-add_executable(measure_time_mood_mp src/measure_time_mood_mp.c)
-target_link_libraries(measure_time_mood_mp mood_mp reader_utils)
