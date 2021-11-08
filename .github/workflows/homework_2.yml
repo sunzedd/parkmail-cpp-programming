@@ -37,8 +37,8 @@ jobs:
 
       - name: Lint
         run: |
-          run-clang-tidy -p build
-          run-clang-tidy -p build_mp
+          run-clang-tidy -p build > linter_report_mood.txt
+          run-clang-tidy -p build_mp > linter_report_mood_mp.txt
           
       - name: Test (unit)
         run: |
@@ -72,6 +72,15 @@ jobs:
           lcov --capture --directory . -o coverage.info
           lcov --remove coverage.info '/usr/include/*' '*/tests/*'  -o filtered_coverage.info
           genhtml -o coverage_report filtered_coverage.info
+
+      - name: Upload linter report
+        uses: actions/upload-artifact@v2
+        with:
+          name: report-linter
+          path: |
+            ./homework_2/build/linter_report_mood.txt
+            ./homework_2/build_mp/linter_report_mood_mp.txt
+          if-no-files-found: error
 
       - name: Upload memory report
         uses: actions/upload-artifact@v2
