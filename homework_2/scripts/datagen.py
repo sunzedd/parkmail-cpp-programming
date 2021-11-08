@@ -61,35 +61,50 @@ def add_mood_digraphs_randomly(s: str, positive_count: int, negative_count: int)
 
     return "".join(chars)
 
-def generate_text_file(mood: int, filesize: int, filename: str):
+def generate_text_with_digraphs(mood: int, filesize: int):
     text = generate_random_string(filesize)
     positive_count, negative_count = pick_mood_digraphs_cout(filesize, mood)
     text = add_mood_digraphs_randomly(text, positive_count, negative_count)
-    if len(text) > 0:
-        output_file = open(filename, "w")
-        output_file.write(text)
-        output_file.close()
+    return text
 
 def print_usage():
     print("usage:")
     print("\tdatagen.py <mood> <filesize in mb> <filename>")
     print("\tparameter mood: [negative | neutral | positive]\n")
 
+def write_generated_text_into_file(text: str, filename: str, filesize_mbytes: int):
+    with open(filename, "w") as f:
+        f.write(text)
+        print("File succesfully generated")
+
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print_usage()
-        exit()
+    if len(sys.argv) == 4:
+        if sys.argv[1] == 'negative':
+            mood = -1
+        elif sys.argv[1] == 'neutral':
+            mood = 0
+        elif sys.argv[1] == 'positive':
+            mood = 1
+        else:
+            print('invalid mood parameter passed')
+            print_usage()
+            exit()
 
-    if sys.argv[1] == 'negative':
-        mood = -1
-    elif sys.argv[1] == 'neutral':
-        mood = 0
-    elif sys.argv[1] == 'positive':
-        mood = 1
+        filesize_mbytes = int(sys.argv[2])
+        filesize_bytes = filesize_mbytes * 1024
+        filename = sys.argv[3]
+
+        print("Generating file: " + filename + "\tSize: " + str(filesize_bytes // 1024) + " Mb")
+                
+        if filesize_mbytes <= 100:
+            text = generate_text_with_digraphs(mood, filesize_bytes)
+        else:
+            text = generate_text_with_digraphs(mood, 100 * 1024)
+            text_scale_factor = filesize_mbytes // 100
+            text = "" + text * text_scale_factor
+            
+        write_generated_text_into_file(text, filename, filesize_mbytes)
+        print()
     else:
-        print('invalid mood parameter passed')
         print_usage()
         exit()
-
-    generate_text_file(mood, int(sys.argv[2]) * 1024, sys.argv[3])
-    print('generated file ' + sys.argv[3] + " size: " + str(sys.argv[2]) + " mb")
