@@ -53,11 +53,24 @@ jobs:
           valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/mood.txt ./lib/mood/tests/test_mood
           valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/moodmp.txt ./lib/mood_mp/tests/test_mood_mp
           valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/reader_utils.txt ./lib/reader_utils/tests/test_reader_utils
-          ls memory_report/
+        
+      - name: Compose coverage report
+        run: |
+          cd build
+          lcov --capture --directory . -o coverage.info
+          lcov --remove coverage.info '/usr/include/*' -o filtered_coverage.info
+          genhtml -o coverage_report filtered_coverage.info
 
       - name: Upload memory report
         uses: actions/upload-artifact@v2
         with:
           name: report-memory
           path: ./homework_2/build/memory_report/
+          if-no-files-found: error
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: ./homework_2/build/coverage_report/
           if-no-files-found: error
