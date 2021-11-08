@@ -86,3 +86,11 @@ jobs:
           name: report-coverage
           path: ./homework_2/build/coverage_report/
           if-no-files-found: error
+
+      - name: Upload stress test report
+        uses: actions/upload-artifact@v2
+        with:
+          name: report-time
+          path: |
+           ./homework_2/build/stress_test/time_report_mood.txt
+           ./homework_2/build/stress_test/time_report_mood_mp.txt
