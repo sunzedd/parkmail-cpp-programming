@@ -10,15 +10,16 @@ void print_usage() {
     printf("homework_2 usage:\n");
     printf("\thomework_2 <filepath>\n\n");
 }
+
 void print_error(mood_error_t error) {
     char error_string[ERROR_STRING_SIZE];
     get_error_string(error, error_string);
     printf("Error has occurred: %s\n", error_string);
 }
+
 void print_mood(mood_t mood) {
     printf("Mood is ");
-    switch (mood)
-    {
+    switch (mood) {
     case MOOD_NEUTRAL:
         printf("neutral\n");
         break;

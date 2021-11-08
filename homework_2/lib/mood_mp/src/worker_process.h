@@ -90,7 +90,7 @@ static void dispatch_workers_and_wait(shared_data_t data, size_t worker_count) {
     }
 
     int worker_status;
-    while (wait(&worker_status) > 0)
+    while (wait(&worker_status) != -1)
     { }
 }
 
