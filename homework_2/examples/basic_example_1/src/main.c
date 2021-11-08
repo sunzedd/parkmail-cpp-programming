@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
     mood_error_t err = read_file(argv[1], &data);
     
     if (!err) {
-        mood_t mood;
+        mood_t mood = MOOD_NEUTRAL;
         err = mood_determine(data, &mood);
         if (!err) {
             print_mood(mood);
