@@ -63,8 +63,8 @@ jobs:
           python3 ./scripts/datagen.py positive 1000 build/stress_test/data/1gb.txt
 
           cd build/stress_test/data
-          ../../examples/measure_time/mood > ../time_report_mood.txt
-          ../../examples/measure_time/mood_mp > ../time_report_mood_mp.txt
+          ../../examples/measure_time/mood/measure_time_mood > ../time_report_mood.txt
+          ../../examples/measure_time/mood_mp/measure_time_mood_mp > ../time_report_mood_mp.txt
 
       - name: Compose coverage report
         run: |
