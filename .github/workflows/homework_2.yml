@@ -37,8 +37,8 @@ jobs:
 
       - name: Lint
         run: |
-          run-clang-tidy -p build > linter_report_mood.txt
-          run-clang-tidy -p build_mp > linter_report_mood_mp.txt
+          run-clang-tidy -p build > build/linter_report_mood.txt
+          run-clang-tidy -p build_mp > build_mp/linter_report_mood_mp.txt
           
       - name: Test (unit)
         run: |
