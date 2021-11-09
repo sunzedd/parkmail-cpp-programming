@@ -10,7 +10,7 @@ extern "C" {
 
 #define ROUNDS 10
 
-class StressTester : public ::testing::Test {
+class StressTest : public ::testing::Test {
 public:
     static void TearDownTestSuite() {
         std::cout << "\n\n----------------- Time Results ------------------\n";
@@ -30,7 +30,7 @@ public:
     static std::vector<std::string> s_OutputReport;
 };
 
-std::vector<std::string> StressTester::s_OutputReport;
+std::vector<std::string> StressTest::s_OutputReport;
 
 
 static mood_error_t run(const char *s, double *out_cpu_time_ms) {
@@ -57,7 +57,7 @@ static void measure_average(const char *s, double *out_avg_cpu_time_ms) {
     *out_avg_cpu_time_ms = (double)(summary_cpu_time / (long double)ROUNDS);
 }
 
-TEST_F(StressTester, FILESIZE_1_MB) {
+TEST_F(StressTest, FILESIZE_1_MB) {
     char *s = NULL;
     mood_error_t  err = read_file("data/1mb.txt", &s);
     ASSERT_EQ(err, ERR_OK);
@@ -65,11 +65,11 @@ TEST_F(StressTester, FILESIZE_1_MB) {
     double avg_cpu_time = 0;
     measure_average(s, &avg_cpu_time);
 
-    StressTester::UpdateReport(1, avg_cpu_time);
+    StressTest::UpdateReport(1, avg_cpu_time);
     free(s);
 }
 
-TEST_F(StressTester, FILESIZE_10_MB) {
+TEST_F(StressTest, FILESIZE_10_MB) {
     char *s = NULL;
     mood_error_t  err = read_file("data/10mb.txt", &s);
     ASSERT_EQ(err, ERR_OK);
@@ -77,12 +77,12 @@ TEST_F(StressTester, FILESIZE_10_MB) {
     double avg_cpu_time = 0;
     measure_average(s, &avg_cpu_time);
 
-    StressTester::UpdateReport(10, avg_cpu_time);
+    StressTest::UpdateReport(10, avg_cpu_time);
 
     free(s);
 }
 
-TEST_F(StressTester, FILESIZE_100_MB) {
+TEST_F(StressTest, FILESIZE_100_MB) {
     char *s = NULL;
     mood_error_t  err = read_file("data/100mb.txt", &s);
     ASSERT_EQ(err, ERR_OK);
@@ -90,12 +90,12 @@ TEST_F(StressTester, FILESIZE_100_MB) {
     double avg_cpu_time = 0;
     measure_average(s, &avg_cpu_time);
 
-    StressTester::UpdateReport(100, avg_cpu_time);
+    StressTest::UpdateReport(100, avg_cpu_time);
 
     free(s);
 }
 
-TEST_F(StressTester, FILESIZE_1000_MB) {
+TEST_F(StressTest, FILESIZE_1000_MB) {
     char *s = NULL;
     mood_error_t  err = read_file("data/1gb.txt", &s);
     ASSERT_EQ(err, ERR_OK);
@@ -103,6 +103,6 @@ TEST_F(StressTester, FILESIZE_1000_MB) {
     double avg_cpu_time = 0;
     measure_average(s, &avg_cpu_time);
 
-    StressTester::UpdateReport(1000, avg_cpu_time);
+    StressTest::UpdateReport(1000, avg_cpu_time);
     free(s);
 }
