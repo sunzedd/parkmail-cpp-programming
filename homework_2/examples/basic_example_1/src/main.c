@@ -2,6 +2,7 @@
 #include <reader_utils/read_file.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 void print_usage() {
     printf("\n");
@@ -62,15 +63,10 @@ void print_mood(mood_t mood) {
     }
 }
 
-int main(int argc, char **argv) {
-    if (argc != 2) {
-        print_usage();
-        return 0;
-    }
-
+void print_mood_of_file(const char *filepath) {
     char *data = NULL;
-    mood_error_t err = read_file(argv[1], &data);
-    
+    mood_error_t err = read_file(filepath, &data);
+
     if (!err) {
         mood_t mood = MOOD_NEUTRAL;
         err = mood_determine(data, &mood);
@@ -84,6 +80,21 @@ int main(int argc, char **argv) {
     }
     if (data) {
         free(data);
+    }
+}
+
+bool check_cmd_args(int argc) {
+    if (argc != 2) {
+        return false;
+    }
+    return true;
+}
+
+int main(int argc, char **argv) {
+    if (check_cmd_args(argc)) {
+        print_mood_of_file(argv[2])
+    } else {
+        print_usage();
     }
 
     return 0;
