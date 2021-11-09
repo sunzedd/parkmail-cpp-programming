@@ -59,10 +59,10 @@ jobs:
       - name: Test (stress)
         run: |
           mkdir build/tests/stress/data
-          python3 tests/stress/scripts/datagen.py neutral 1 build/tests/stress/data/1mb.txt
           python3 tests/stress/scripts/datagen.py neutral 10 build/tests/stress/data/10mb.txt
           python3 tests/stress/scripts/datagen.py neutral 100 build/tests/stress/data/100mb.txt
           python3 tests/stress/scripts/datagen.py neutral 1000 build/tests/stress/data/1gb.txt
+          python3 tests/stress/scripts/datagen.py neutral 5000 build/tests/stress/data/5gb.txt
 
           cd build
           ctest -R stress_mood --verbose

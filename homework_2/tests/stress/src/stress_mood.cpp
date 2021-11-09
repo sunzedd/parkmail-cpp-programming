@@ -2,6 +2,7 @@
 #include <ctime>
 #include <vector>
 #include <string>
+#include <chrono>
 
 extern "C" {
 #include <mood/mood_determine.h>
@@ -36,11 +37,12 @@ std::vector<std::string> StressTest::s_OutputReport;
 static mood_error_t run(const char *s, double *out_cpu_time_ms) {
     mood_t mood = MOOD_NEUTRAL;
 
-    clock_t start = clock();
+    auto start = std::chrono::high_resolution_clock::now();
     mood_error_t err = mood_determine(s, &mood);
-    clock_t end = clock();
+    auto end = std::chrono::high_resolution_clock::now();
 
-    *out_cpu_time_ms = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+    *out_cpu_time_ms = std::chrono::duration<double, std::milli>(end - start).count();
+
     return err;
 }
 
@@ -55,18 +57,6 @@ static void measure_average(const char *s, double *out_avg_cpu_time_ms) {
     }
 
     *out_avg_cpu_time_ms = (double)(summary_cpu_time / (long double)ROUNDS);
-}
-
-TEST_F(StressTest, FILESIZE_1_MB) {
-    char *s = NULL;
-    mood_error_t  err = read_file("data/1mb.txt", &s);
-    ASSERT_EQ(err, ERR_OK);
-
-    double avg_cpu_time = 0;
-    measure_average(s, &avg_cpu_time);
-
-    StressTest::UpdateReport(1, avg_cpu_time);
-    free(s);
 }
 
 TEST_F(StressTest, FILESIZE_10_MB) {
@@ -95,7 +85,7 @@ TEST_F(StressTest, FILESIZE_100_MB) {
     free(s);
 }
 
-TEST_F(StressTest, FILESIZE_1000_MB) {
+TEST_F(StressTest, FILESIZE_1_GB) {
     char *s = NULL;
     mood_error_t  err = read_file("data/1gb.txt", &s);
     ASSERT_EQ(err, ERR_OK);
@@ -104,5 +94,19 @@ TEST_F(StressTest, FILESIZE_1000_MB) {
     measure_average(s, &avg_cpu_time);
 
     StressTest::UpdateReport(1000, avg_cpu_time);
+
+    free(s);
+}
+
+TEST_F(StressTest, FILESIZE_5_GB) {
+    char *s = NULL;
+    mood_error_t  err = read_file("data/5gb.txt", &s);
+    ASSERT_EQ(err, ERR_OK);
+
+    double avg_cpu_time = 0;
+    measure_average(s, &avg_cpu_time);
+
+    StressTest::UpdateReport(5000, avg_cpu_time);
+
     free(s);
 }
