@@ -3,7 +3,7 @@ import random
 import string
 import math
 
-PARTY_OF_DIGRAPHS_IN_TEXT = 0.2
+PART_OF_DIGRAPHS_IN_TEXT = 0.2
 
 def generate_random_string(size: int):
     letters = string.ascii_letters
@@ -11,7 +11,7 @@ def generate_random_string(size: int):
     return rs
 
 def pick_mood_digraphs_cout(text_size: int, mood: int):
-    digraphs_count = math.floor(text_size * PARTY_OF_DIGRAPHS_IN_TEXT)
+    digraphs_count = math.floor(text_size * PART_OF_DIGRAPHS_IN_TEXT)
 
     positive_count = 0
     negative_count = 0
