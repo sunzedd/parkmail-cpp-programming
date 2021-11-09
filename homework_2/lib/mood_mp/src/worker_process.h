@@ -56,7 +56,7 @@ static void run_worker(const worker_data_t *const wd) {
                                    wd->region_bound_indices.end,
                                    &region_mood_value);
         wd->shared_output[wd->id] = region_mood_value;
-        //free(wd->input_data);
+
         exit(EXIT_SUCCESS);
     }
 }
