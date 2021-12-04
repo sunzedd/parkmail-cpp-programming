@@ -1,0 +1,106 @@
+name: homework_2
+on:
+  push:
+    branches:
+      - homework-2
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./homework_2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: sudo apt install valgrind clang-tidy libgtest-dev lcov
+
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          make
+
+      - name: Build multiprocessed version
+        run: |
+          mkdir build_mp
+          cd build_mp
+          cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DMOODLIB_MP=ON
+          make
+
+      - name: Lint
+        run: |
+          run-clang-tidy -p build > build/linter_report_mood.txt
+          run-clang-tidy -p build_mp > build_mp/linter_report_mood_mp.txt
+          
+      - name: Test (unit)
+        run: |
+          cd build
+          ctest -R test_mood --output-on-failure
+          ctest -R test_mood_mp --output-on-failure
+          ctest -R test_reader_utils --output-on-failure
+
+      - name: Test (unit) with memcheck
+        run: |
+          cd build
+          mkdir memory_report
+          cp -r ../lib/reader_utils/tests/data/ .
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/mood.txt ./lib/mood/tests/test_mood
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/moodmp.txt ./lib/mood_mp/tests/test_mood_mp
+          valgrind --leak-check=full --show-leak-kinds=all --log-file=./memory_report/reader_utils.txt ./lib/reader_utils/tests/test_reader_utils
+      
+      - name: Test (stress)
+        run: |
+          mkdir build/tests/stress/data
+          python3 tests/stress/scripts/datagen.py neutral 10 build/tests/stress/data/10mb.txt
+          python3 tests/stress/scripts/datagen.py neutral 100 build/tests/stress/data/100mb.txt
+          python3 tests/stress/scripts/datagen.py neutral 1000 build/tests/stress/data/1gb.txt
+          python3 tests/stress/scripts/datagen.py neutral 5000 build/tests/stress/data/5gb.txt
+
+          cd build
+          ctest -R stress_mood --verbose
+
+      - name: Compose coverage report
+        run: |
+          cd build
+          lcov --capture --directory . -o coverage.info
+          lcov --remove coverage.info '/usr/include/*' '*/tests/*'  -o filtered_coverage.info
+          genhtml -o coverage_report filtered_coverage.info
+
+      - name: Upload linter report
+        uses: actions/upload-artifact@v2
+        with:
+          name: report-linter
+          path: |
+            ./homework_2/build/linter_report_mood.txt
+            ./homework_2/build_mp/linter_report_mood_mp.txt
+          if-no-files-found: error
+
+      - name: Upload memory report
+        uses: actions/upload-artifact@v2
+        with:
+          name: report-memory
+          path: ./homework_2/build/memory_report/
+          if-no-files-found: error
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: report-coverage
+          path: ./homework_2/build/coverage_report/
+          if-no-files-found: error
+
+      # - name: Upload stress test report
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: report-time
+      #     path: |
+      #      ./homework_2/build/stress_test/time_report_mood.txt
+      #      ./homework_2/build/stress_test/time_report_mood_mp.txt

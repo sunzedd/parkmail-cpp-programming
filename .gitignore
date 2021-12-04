@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+
+# directories
+**/build/
+**/build_mp/
+**/cmake-build-debug/
+**/cmake-build-release/
+**/.vscode/
+**/.idea/
+
+**/myscripts/
+**/Testing/
